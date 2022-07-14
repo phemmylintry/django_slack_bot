@@ -15,22 +15,29 @@ class UserCreateEvent(object):
             result = client.users_info(user=self.slack_id)
         except Exception as e:
             print(e)
+            # log issue
             return None
 
         return result.get("user").get("profile")
 
     def create_user_instance(self):
         result = self.get_user_details_from_slack()
-
         username = result.get("display_name")
         email = result.get("email")
 
         try:
-            user = User.objects.create(username=username, email=email)
-            user.set_password(default_password(username))
-            user.save()
+            # check if email is already in use
+            user = User.objects.filter(email=email).first()
+            if not user:
+                user = User.objects.create(username=username, email=email)
+                user.set_password(default_password(username))
+                user.save()
+                # log when user created successfully
+
         except IntegrityError:
+            # log issue
             pass
+        return user
 
 
 def default_password(string: str):
