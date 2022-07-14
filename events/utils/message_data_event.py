@@ -1,11 +1,10 @@
 from datetime import datetime
 
-import slack
+import slack_sdk
 from django.conf import settings
-from django.db.utils import IntegrityError
 from events.models import MessageData
 
-client = slack.WebClient(token=settings.SLACK_BOT_USER_OAUTH_TOKEN)
+client = slack_sdk.WebClient(token=settings.SLACK_BOT_USER_OAUTH_TOKEN)
 
 
 class MessageEvents(object):
@@ -25,8 +24,7 @@ class MessageEvents(object):
                 author=self.user,
                 related_action=self.related_action,
             )
-        except IntegrityError:
-            # log issue
-            pass
+        except Exception as e:
+            print(str(e))
 
         return message

@@ -1,5 +1,7 @@
 from django.contrib import admin
-from django.urls import path
-from events.views import Events
+from django.urls import include, path
 
-urlpatterns = [path("admin/", admin.site.urls), path("events/", Events.as_view())]
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("events/", include("events.urls")),
+]

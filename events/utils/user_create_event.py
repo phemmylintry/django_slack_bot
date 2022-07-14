@@ -1,9 +1,10 @@
-import slack
+import slack_sdk
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
+from slack_sdk.errors import SlackApiError
 
-client = slack.WebClient(token=settings.SLACK_BOT_USER_OAUTH_TOKEN)
+client = slack_sdk.WebClient(token=settings.SLACK_BOT_USER_OAUTH_TOKEN)
 
 
 class UserCreateEvent(object):
@@ -13,10 +14,11 @@ class UserCreateEvent(object):
     def get_user_details_from_slack(self):
         try:
             result = client.users_info(user=self.slack_id)
-        except Exception as e:
+        except SlackApiError as e:
             print(e)
             # log issue
-            return None
+        except Exception as e:
+            print(e)
 
         return result.get("user").get("profile")
 
