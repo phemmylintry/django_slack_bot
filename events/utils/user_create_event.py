@@ -1,29 +1,16 @@
-import slack_sdk
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
-from slack_sdk.errors import SlackApiError
-
-client = slack_sdk.WebClient(token=settings.SLACK_BOT_USER_OAUTH_TOKEN)
+from events.utils.slack_client import instance as slack_client
+from slack_bot.utils import constants
+from slack_bot.utils.error_logger import log_error
 
 
 class UserCreateEvent(object):
     def __init__(self, slack_id):
         self.slack_id = slack_id
 
-    def get_user_details_from_slack(self):
-        try:
-            result = client.users_info(user=self.slack_id)
-        except SlackApiError as e:
-            print(e)
-            # log issue
-        except Exception as e:
-            print(e)
-
-        return result.get("user").get("profile")
-
     def create_user_instance(self):
-        result = self.get_user_details_from_slack()
+        result = slack_client.get_user_details_from_slack(self.slack_id)
         username = result.get("display_name")
         email = result.get("email")
 
@@ -34,11 +21,21 @@ class UserCreateEvent(object):
                 user = User.objects.create(username=username, email=email)
                 user.set_password(default_password(username))
                 user.save()
-                # log when user created successfully
+
+            log_error(
+                constants.LOGGER_LOG_MESSAGE,
+                "UserCreateEvent:create_user_instance",
+                "User created or found",
+            )
 
         except IntegrityError:
-            # log issue
-            pass
+            log_error(
+                constants.LOGGER_CRITICAL_SEVERITY,
+                "UserCreateEvent:create_user_instance",
+                "User already exists",
+            )
+            return None
+
         return user
 
 

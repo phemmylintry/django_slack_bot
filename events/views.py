@@ -7,7 +7,10 @@ from slack_sdk.errors import SlackApiError
 
 from events.utils.files_util import return_random_file
 from events.utils.message_data_event import MessageEvents
+from events.utils.slack_client import instance as slack_client
 from events.utils.user_create_event import UserCreateEvent
+from slack_bot.utils import constants
+from slack_bot.utils.error_logger import log_error
 
 from .models import MessageData
 
@@ -25,7 +28,7 @@ class Events(APIView):
         slack_message = request.data
 
         if not is_request_valid(slack_message):
-            # log error
+            log_error(constants.LOGGER_CRITICAL_SEVERITY, "Events:post", "Invalid request")
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         if slack_message.get("type") == "url_verification":
@@ -86,16 +89,7 @@ class UploadFileView(APIView):
             # log error
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            response = client.files_upload(
-                file=return_random_file(), channels=channel_id
-            )
-        except SlackApiError as e:
-            # log the error here
-            return Response(data=str(e), status=status.HTTP_400_BAD_REQUEST)
-
-        file_name = response.get("file").get("name")
-        data = f"{file_name} uploaded successfully"
+        data = slack_client.upload_file(return_random_file(), channel_id)
 
         return Response(data, status=status.HTTP_200_OK)
 

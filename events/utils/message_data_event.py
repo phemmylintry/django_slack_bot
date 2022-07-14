@@ -1,10 +1,8 @@
 from datetime import datetime
 
-import slack_sdk
-from django.conf import settings
 from events.models import MessageData
-
-client = slack_sdk.WebClient(token=settings.SLACK_BOT_USER_OAUTH_TOKEN)
+from slack_bot.utils import constants
+from slack_bot.utils.error_logger import log_error
 
 
 class MessageEvents(object):
@@ -25,6 +23,11 @@ class MessageEvents(object):
                 related_action=self.related_action,
             )
         except Exception as e:
-            print(str(e))
+            log_error(
+                constants.LOGGER_CRITICAL_SEVERITY,
+                "MessageEvents:create_message_data_instance",
+                str(e),
+            )
+            return None
 
         return message

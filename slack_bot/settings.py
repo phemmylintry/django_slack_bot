@@ -115,3 +115,45 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SLACK_BOT_USER_OAUTH_TOKEN = config("SLACK_BOT_USER_OAUTH_TOKEN")
 SLACK_SIGNING_SECRET = config("SLACK_SIGNING_SECRET")
 SLACK_VERIFICATION_TOKEN = config("SLACK_VERIFICATION_TOKEN")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "root": {
+        "level": "DEBUG",
+        "handlers": [
+            "console",
+        ],
+    },
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s "
+            "%(process)d %(thread)d %(message)s"
+        },
+        "simple": {
+            "format": "%(levelname)s %(asctime)s %(process)d %(thread)d %(name)s.%(module)s:%(lineno)d %(message)s",
+        },
+    },
+    "handlers": {
+        "file": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": "debug.log",
+            "backupCount": 10,
+            "maxBytes": 15 * 1024 * 1024,  # 15 MB
+            "formatter": "simple",
+        },
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "app-logger": {
+            "handlers": ["file", "console"],
+            "level": "INFO",
+            "propagate": True,
+        },
+    },
+}
