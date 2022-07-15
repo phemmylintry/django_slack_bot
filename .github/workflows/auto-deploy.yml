@@ -27,5 +27,12 @@ jobs:
           kubectl version --client
           aws eks --region us-east-1 update-kubeconfig --name shell-cluster
           kubectl deploy -f deployment/server.yaml
+  
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-1'
+
+
 
 
