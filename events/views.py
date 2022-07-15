@@ -3,14 +3,14 @@ from django.conf import settings
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from slack_bot.utils import constants
+from slack_bot.utils.error_logger import log_error
 from slack_sdk.errors import SlackApiError
 
 from events.utils.files_util import return_random_file
 from events.utils.message_data_event import MessageEvents
 from events.utils.slack_client import instance as slack_client
 from events.utils.user_create_event import UserCreateEvent
-from slack_bot.utils import constants
-from slack_bot.utils.error_logger import log_error
 
 from .models import MessageData
 
@@ -28,7 +28,9 @@ class Events(APIView):
         slack_message = request.data
 
         if not is_request_valid(slack_message):
-            log_error(constants.LOGGER_CRITICAL_SEVERITY, "Events:post", "Invalid request")
+            log_error(
+                constants.LOGGER_CRITICAL_SEVERITY, "Events:post", "Invalid request"
+            )
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         if slack_message.get("type") == "url_verification":
@@ -63,7 +65,9 @@ class ListOfMessage(APIView):
         slack_message = request.data
 
         if not is_request_valid(slack_message):
-            # log error
+            log_error(
+                constants.LOGGER_CRITICAL_SEVERITY, "Events:post", "Invalid request"
+            )
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         # get or create user instance
@@ -86,53 +90,40 @@ class UploadFileView(APIView):
         channel_id = slack_message.get("channel_id")
 
         if not is_request_valid(slack_message):
-            # log error
+            log_error(
+                constants.LOGGER_CRITICAL_SEVERITY, "Events:post", "Invalid request"
+            )
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         data = slack_client.upload_file(return_random_file(), channel_id)
-
         return Response(data, status=status.HTTP_200_OK)
 
 
 class DeleteFileView(APIView):
     def post(self, request):
-        response = {"text": "File deleted successfully"}
         slack_message = request.data
         file_id = slack_message.get("text")
 
         if not is_request_valid(slack_message):
-            # log error
+            log_error(
+                constants.LOGGER_CRITICAL_SEVERITY, "Events:post", "Invalid request"
+            )
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            resp = client.files_delete(file=file_id)
-            print("Error resp", resp)
-        except SlackApiError as e:
-            response["text"] = "Error: " + str(e)
-            return Response(response, status=status.HTTP_200_OK)
-        print("Sucess resp", resp)
-        return Response(response, status=status.HTTP_200_OK)
+        data = slack_client.delete_file(file_id)
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class GetSingleFileView(APIView):
     def post(self, request):
-        response = {"text": "File info retrieved successfully"}
         slack_message = request.data
         file_id = slack_message.get("text")
 
         if not is_request_valid(slack_message):
-            # log error
+            log_error(
+                constants.LOGGER_CRITICAL_SEVERITY, "Events:post", "Invalid request"
+            )
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            resp = client.files_info(file=file_id)
-        except SlackApiError as e:
-            response["text"] = "Error: " + str(e)
-            return Response(response, status=status.HTTP_200_OK)
-
-        file_data = resp.get("file")
-        data = ""
-        for key, value in file_data.items():
-            data += f"{key}: {value}\n"
-        response["text"] = data
-        return Response(response, status=status.HTTP_200_OK)
+        data = slack_client.get_file_info(file_id)
+        return Response(data, status=status.HTTP_200_OK)

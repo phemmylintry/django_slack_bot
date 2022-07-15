@@ -1,0 +1,27 @@
+name: Slack Bot Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: bitnami/kubectl
+    strategy:
+      max-parallel: 3
+      matrix:
+        python-version: [3.7, 3.8, 3.9]
+    
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: slack-bot-be
+        run: |
+           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+           install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+           kubectl version --client
+           aws eks --region us-east-1 update-kubeconfig --name shell-cluster
+           kubectl deploy -f deployment/server.yaml
