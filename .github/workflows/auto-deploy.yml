@@ -21,7 +21,8 @@ jobs:
       - name: slack-bot-be
         run: |
            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+           mkdir -p /usr/local/bin/
+           install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
            kubectl version --client
            aws eks --region us-east-1 update-kubeconfig --name shell-cluster
            kubectl deploy -f deployment/server.yaml
