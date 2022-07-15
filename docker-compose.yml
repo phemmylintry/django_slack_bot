@@ -20,14 +20,6 @@ services:
       - ./.env
     depends_on:
       - db
-  # nginx:
-  #   build: ./nginx
-  #   volumes:
-  #     - static_volume:/static
-  #   ports:
-  #     - "80"
-  #   depends_on:
-  #     - web
 
 volumes:
   postgres_data:

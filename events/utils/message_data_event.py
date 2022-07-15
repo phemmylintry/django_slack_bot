@@ -22,6 +22,11 @@ class MessageEvents(object):
                 author=self.user,
                 related_action=self.related_action,
             )
+            log_error(
+                constants.LOGGER_LOG_MESSAGE,
+                "MessageEvents:create_message_data_instance",
+                "Message created",
+            )
         except Exception as e:
             log_error(
                 constants.LOGGER_CRITICAL_SEVERITY,

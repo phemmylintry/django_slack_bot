@@ -151,7 +151,7 @@ LOGGING = {
     },
     "loggers": {
         "app-logger": {
-            "handlers": ["file", "console"],
+            "handlers": ["file"],
             "level": "INFO",
             "propagate": True,
         },
