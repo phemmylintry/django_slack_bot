@@ -29,7 +29,7 @@ jobs:
 
       - name: Build, tag, and push image to Amaon ECR
         env:
-          ECR_REGISTRY: ${{ steps.login-to-ecr.outputs.ecr_registry }}
+          ECR_REGISTRY: ${{ steps.login-to-ecr.outputs.registry  }}
           ECR_REPOSITORY: slack-bot
           IMAGE_TAG: v1
         run: |
