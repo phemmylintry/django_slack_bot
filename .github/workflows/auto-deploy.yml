@@ -3,7 +3,7 @@ name: Slack Bot Deployment
 on:
   push:
     branches:
-      - main
+      - deploy
 
 jobs:
   build:
