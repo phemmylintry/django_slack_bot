@@ -22,10 +22,19 @@ jobs:
           version: latest # default is latest stable
         id: install-kubectl
       
+      - id: install-aws-cli
+        uses: unfor19/install-aws-cli-action@v1.0.3
+        with:
+          version: 2     # default
+          verbose: false # default
+          arch: amd64    # allowed values: amd64, arm64
+          rootdir: ""    # defaults to "PWD"
+          workdir: ""    # defaults to "PWD/unfor19-awscli"
 
       - name: slack-bot-be
         run: |
           kubectl version --client
           aws eks --region us-east-1 update-kubeconfig --name shell-cluster
           kubectl deploy -f deployment/server.yaml
+
 
