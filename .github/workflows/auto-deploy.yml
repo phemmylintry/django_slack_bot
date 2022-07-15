@@ -41,4 +41,4 @@ jobs:
       - name: Connect to EKS cluster
         run: |
           aws eks --region ${{ secrets.EKS_REGION }} update-kubeconfig --name slack-bot-cluster
-          kubectl deploy -f k8s/server.yaml
+          kubectl apply -f k8s/server.yaml
