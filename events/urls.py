@@ -9,9 +9,9 @@ from .views import (
 )
 
 urlpatterns = [
-    path("", Events.as_view()),
-    path("list-messages/", ListOfMessage.as_view()),
-    path("upload-file/", UploadFileView.as_view()),
-    path("delete-file/", DeleteFileView.as_view()),
-    path("get-single-file/", GetSingleFileView.as_view()),
+    path("", Events.as_view(), name="events"),
+    path("list-messages/", ListOfMessage.as_view(), name="list-messages"),
+    path("upload-file/", UploadFileView.as_view(), name="upload-file"),
+    path("delete-file/", DeleteFileView.as_view(), name="delete-file"),
+    path("get-single-file/", GetSingleFileView.as_view(), name="get-single-file"),
 ]

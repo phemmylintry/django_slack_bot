@@ -119,12 +119,6 @@ SLACK_VERIFICATION_TOKEN = config("SLACK_VERIFICATION_TOKEN")
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "root": {
-        "level": "DEBUG",
-        "handlers": [
-            "console",
-        ],
-    },
     "formatters": {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
