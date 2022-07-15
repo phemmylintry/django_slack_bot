@@ -20,12 +20,16 @@ jobs:
 
       - name: Install kubectl
         run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
-          echo "$(<kubectl.sha256) kubectl" | sha256sum --check
-
-
-          sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+          VERSION=$(curl --silent https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+          # https://github.com/aws/aws-cli/issues/6920#issuecomment-1117981158
+          VERSION=v1.23.6
+          curl https://storage.googleapis.com/kubernetes-release/release/$VERSION/bin/linux/amd64/kubectl \
+            --progress-bar \
+            --location \
+            --remote-name
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+          echo ${{ secrets.KUBECONFIG }} | base64 --decode > kubeconfig.yaml
           kubectl version --client
 
       - name: Check AWS version
