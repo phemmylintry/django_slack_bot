@@ -8,8 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: bitnami/kubectl
     strategy:
       max-parallel: 3
       matrix:
