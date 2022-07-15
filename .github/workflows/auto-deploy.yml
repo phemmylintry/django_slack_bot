@@ -39,4 +39,4 @@ jobs:
           aws sts get-caller-identity
 
       - name: Connect to EKS cluster
-        run: aws eks --region $EKS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+        run: aws eks --region ${{ secrets.EKS_REGION }} update-kubeconfig --name slack-bot-cluster
