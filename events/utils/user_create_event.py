@@ -11,8 +11,8 @@ class UserCreateEvent(object):
 
     def create_user_instance(self):
         result = slack_client.get_user_details_from_slack(self.slack_id)
-        username = result.get("display_name")
-        email = result.get("email")
+        username = result.get("text").get("display_name")
+        email = result.get("text").get("email")
 
         try:
             # check if email is already in use
@@ -34,7 +34,7 @@ class UserCreateEvent(object):
                 "UserCreateEvent:create_user_instance",
                 "User already exists",
             )
-            return None
+            pass
 
         return user
 

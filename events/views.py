@@ -26,7 +26,6 @@ def is_request_valid(data):
 class Events(APIView):
     def post(self, request, *args, **kwargs):
         slack_message = request.data
-
         if not is_request_valid(slack_message):
             log_error(
                 constants.LOGGER_CRITICAL_SEVERITY, "Events:post", "Invalid request"
