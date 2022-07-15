@@ -17,12 +17,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - uses: azure/setup-kubectl@v2.0
+        with:
+          version: latest # default is latest stable
+        id: install-kubectl
+      
 
       - name: slack-bot-be
         run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          mkdir -p ~/bin
-          install -o root -g root -m 0755 kubectl ~/bin/kubectl
           kubectl version --client
           aws eks --region us-east-1 update-kubeconfig --name shell-cluster
           kubectl deploy -f deployment/server.yaml
+
