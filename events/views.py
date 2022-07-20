@@ -93,6 +93,11 @@ class UploadFileView(APIView):
                 constants.LOGGER_CRITICAL_SEVERITY, "Events:post", "Invalid request"
             )
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        # validate user
+        user = slack_client.get_user_details_from_slack(slack_message.get("user_id"))
+        if "user_not_found" in user.get("text"):
+            return Response(user, status=status.HTTP_400_BAD_REQUEST)
 
         data = slack_client.upload_file(return_random_file(), channel_id)
         return Response(data, status=status.HTTP_200_OK)

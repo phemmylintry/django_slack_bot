@@ -37,3 +37,25 @@ LIST_PREVIOS_MESSAGES_FOR_TEST = {
     "token": settings.SLACK_VERIFICATION_TOKEN,
     "user_id": "U03NZATLGNT",
 }
+
+
+FILE_UPLOAD_PAYLOAD_FOR_TEST = {
+    "token": settings.SLACK_VERIFICATION_TOKEN,
+    "channel_id": "C03PSJ403A5",
+    "user_id": "U03NZATLGNT",
+}
+
+FILE_DELETE_PAYLOAD_FOR_TEST = {
+    "token": settings.SLACK_VERIFICATION_TOKEN,
+    "channel_id": "C03PDU3HSBU",
+    "user_id": "U03NZATLGNT",
+    "text": "F03PTDN8TB9",
+}
+
+
+FILE_DETAILS_PAYLOAD_FOR_TEST = {
+    "token": settings.SLACK_VERIFICATION_TOKEN,
+    "channel_id": "C03PDU3HSBU",
+    "user_id": "U03NZATLGNT",
+    "text": "F03QAU8GSMS",
+}
